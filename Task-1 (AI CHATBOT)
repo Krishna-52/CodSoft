@@ -1,1 +1,134 @@
+import re
+import random
+
+# Bot abilities
+bot_abilities = [
+    "Chat with you about different topics",
+    "Answer basic questions",
+    "Tell jokes",
+    "Share fun facts",
+    "Give motivational quotes",
+    "Help you practice English",
+    "Explain simple concepts",
+]
+
+# Data for abilities
+jokes = [
+    "Why don’t skeletons fight each other? Because they don’t have the guts!",
+    "Why did the computer go to the doctor? Because it caught a virus!",
+    "Why was the math book sad? Because it had too many problems."
+]
+
+quotes = [
+    "Believe you can and you’re halfway there.",
+    "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+    "Your time is limited, so don’t waste it living someone else’s life."
+]
+
+facts = [
+    "Honey never spoils. Archaeologists have found pots of honey thousands of years old that are still edible!",
+    "Bananas are berries, but strawberries are not.",
+    "Octopuses have three hearts."
+]
+
+english_words = ["serendipity", "optimistic", "innovation", "gratitude", "resilience"]
+
+simple_concepts = {
+    "python": "Python is a popular programming language known for its simplicity and readability.",
+    "ai": "AI stands for Artificial Intelligence — it’s when computers can perform tasks that usually require human intelligence.",
+    "internet": "The internet is a global network that connects millions of devices for sharing information.",
+    "cloud computing": "Cloud computing means storing and accessing data and programs over the internet instead of your computer's hard drive."
+}
+
+basic_questions = {
+    "capital of india": "The capital of India is New Delhi.",
+    "2+2": "2 + 2 = 4.",
+    "largest planet": "The largest planet in our solar system is Jupiter.",
+    "fastest animal": "The fastest land animal is the cheetah."
+}
+
+def clean_text(text):
+    """Lowercase, remove extra spaces & punctuation."""
+    text = text.lower().strip()
+    text = re.sub(r"[^\w\s]", "", text)  # remove punctuation
+    return text
+
+def greet_user():
+    print("🤖 AI SimpleBot: Hello! I’m your smart chatbot. Let’s chat!")
+    print("Type 'bye' anytime to exit.\n")
+
+def get_response(user_input):
+    text = clean_text(user_input)
+
+    # Greeting detection
+    if re.search(r"\bhi+\b|\bhello+\b|\bhey+\b", text):
+        return random.choice(["Hello there! 👋", "Hey! How are you?", "Hi! Nice to meet you."])
+    
+    # Asking about bot's status
+    elif "how" in text and "you" in text:
+        return random.choice(["I'm doing great, thanks! How about you?", "Feeling awesome! What about you?"])
+    
+    # Asking for bot's name
+    elif "name" in text:
+        return random.choice(["I’m SimpleBot, your AI buddy!", "They call me SimpleBot."])
+    
+    # Asking about weather
+    elif "weather" in text or "temperature" in text:
+        return random.choice(["I can't check live weather yet, but I hope it's sunny where you are!",
+                              "I’m not connected to weather data, but I wish you clear skies."])
+    
+    # Asking what the bot can do
+    elif "what" in text and "you" in text and "do" in text:
+        abilities_str = ", ".join(bot_abilities[:-1]) + ", and " + bot_abilities[-1]
+        return f"I can {abilities_str}."
+    
+    # Telling a joke
+    elif "joke" in text:
+        return random.choice(jokes)
+    
+    # Giving a motivational quote
+    elif "quote" in text:
+        return random.choice(quotes)
+    
+    # Sharing a fun fact
+    elif "fact" in text:
+        return random.choice(facts)
+    
+    # Practicing English
+    elif "practice english" in text or "english" in text:
+        word = random.choice(english_words)
+        return f"Here’s a word: '{word}'. Try making a sentence with it!"
+    
+    # Explaining a simple concept
+    elif "explain" in text:
+        for key in simple_concepts:
+            if key in text:
+                return simple_concepts[key]
+        return "Sure! Tell me the topic and I’ll explain it simply."
+    
+    # Answering basic questions
+    for question, answer in basic_questions.items():
+        if question in text:
+            return answer
+    
+    # Exit keywords
+    if "bye" in text or "goodbye" in text or "exit" in text:
+        return "Goodbye! 👋"
+    
+    # Default response
+    return random.choice([
+        "Hmm, I’m not sure about that. 🤔",
+        "Can you tell me more?",
+        "Interesting! Please go on."
+    ])
+
+# Main chatbot loop
+if __name__ == "__main__":
+    greet_user()
+    while True:
+        user_message = input("You: ")
+        if clean_text(user_message) in ["bye", "goodbye", "exit"]:
+            print("🤖 AI SimpleBot: Bye! Have a great day! 🌟")
+            break
+        print("🤖 AI SimpleBot:", get_response(user_message))
 
