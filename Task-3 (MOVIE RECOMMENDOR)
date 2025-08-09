@@ -1,1 +1,85 @@
+import random
+
+"""
+Basic Hindi Movie Recommender System (Dynamic)
+- Works for any user
+- 100 popular Hindi movies in dataset
+- Recommends 8 random relevant movies each time
+"""
+
+# 100 Hindi movies (mix of classic and modern)
+all_movies = [
+    "Sholay", "Dangal", "PK", "3 Idiots", "Bajrangi Bhaijaan", "Gully Boy", "Lagaan", "Zindagi Na Milegi Dobara",
+    "Chak De! India", "Queen", "Andhadhun", "Badhaai Ho", "Barfi!", "Kahaani", "Tumbbad", "Mimi",
+    "Piku", "Drishyam", "Article 15", "Stree", "Uri", "War", "Pathaan", "RRR", "KGF", "Pushpa",
+    "Sultan", "Padmaavat", "Sanju", "Rockstar", "Tamasha", "Kal Ho Naa Ho", "Kabhi Khushi Kabhie Gham",
+    "Dilwale Dulhania Le Jayenge", "Mohabbatein", "Veer-Zaara", "Jab Tak Hai Jaan", "Rab Ne Bana Di Jodi",
+    "Fan", "Raees", "Zero", "My Name Is Khan", "Kuch Kuch Hota Hai", "Student of the Year", "Hum Aapke Hain Koun",
+    "Maine Pyar Kiya", "Dil To Pagal Hai", "Saajan", "Hum Saath Saath Hain", "Tere Naam", "Wanted", "Dabangg",
+    "Bodyguard", "Kick", "Tiger Zinda Hai", "Ek Tha Tiger", "Race 3", "Bharat", "Sooryavanshi", "Simmba",
+    "Singham", "Singham Returns", "Golmaal", "Golmaal Again", "Housefull", "Housefull 2", "Housefull 3",
+    "Bhool Bhulaiyaa", "Bhool Bhulaiyaa 2", "Welcome", "Welcome Back", "Phir Hera Pheri", "Hera Pheri",
+    "De Dana Dan", "Chupke Chupke", "Anand", "Padosan", "Mughal-E-Azam", "Mother India", "Guide",
+    "Amar Akbar Anthony", "Don", "Don 2", "Kaala Patthar", "Kabhie Kabhie", "Silsila", "Trishul",
+    "Deewaar", "Agneepath", "Agneepath (2012)", "Black", "Paheli", "Chalte Chalte", "Baazigar",
+    "Main Hoon Na", "Om Shanti Om", "Chennai Express", "Dil Se"
+]
+
+# Sample user dataset with partial movie watch lists
+movie_data = {
+    "Amit": random.sample(all_movies, 15),
+    "Rohit": random.sample(all_movies, 12),
+    "Priya": random.sample(all_movies, 18),
+    "Sneha": random.sample(all_movies, 20),
+    "Vikram": random.sample(all_movies, 10),
+    "Anjali": random.sample(all_movies, 14),
+    "Raj": random.sample(all_movies, 16),
+    "Simran": random.sample(all_movies, 19)
+}
+
+def get_user_movies(username):
+    return movie_data.get(username, [])
+
+def get_recommendations(user, watched_movies):
+    watched = set(watched_movies)
+    suggestions = {}
+
+    for other_user, movies in movie_data.items():
+        if other_user == user:
+            continue
+        for movie in movies:
+            if movie not in watched:
+                suggestions[movie] = suggestions.get(movie, 0) + 1
+
+    # Sort by popularity
+    sorted_suggestions = sorted(suggestions.items(), key=lambda x: x[1], reverse=True)
+    return [movie for movie, _ in sorted_suggestions]
+
+def main():
+    print("🎬 Welcome to the Hindi Movie Recommender System!\n")
+    username = input("Enter your name: ").capitalize()
+
+    if username not in movie_data:
+        print("\nWe don't have your watch history yet.")
+        watched_movies = input("Enter some Hindi movies you've watched (comma separated): ").split(",")
+        watched_movies = [m.strip().title() for m in watched_movies if m.strip()]
+        movie_data[username] = watched_movies
+    else:
+        watched_movies = get_user_movies(username)
+
+    print("\nMovies you have watched:", ", ".join(watched_movies) if watched_movies else "None")
+
+    recs = get_recommendations(username, watched_movies)
+    if recs:
+        # Pick exactly 8 random recommendations from the top 20 relevant movies
+        top_limit = min(20, len(recs))
+        recommended = random.sample(recs[:top_limit], min(8, top_limit))
+        print("\n📌 Recommended movies for you:")
+        for movie in recommended:
+            print("-", movie)
+    else:
+        print("\nNo new recommendations found. You've watched all popular movies!")
+
+if __name__ == "__main__":
+    main()
 
